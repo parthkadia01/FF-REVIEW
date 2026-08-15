@@ -1,17 +1,65 @@
-<script>
-  let selectedKeywords = [];
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>અમારો અનુભવ કેવો રહ્યો?</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; margin: 0; }
+    .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 380px; margin: 20px auto; }
+    h2 { color: #333; font-size: 22px; margin-bottom: 5px; }
+    p { color: #666; font-size: 14px; margin-bottom: 15px; }
+    .chips-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
+    .btn-chip { background: #e4e6eb; border: none; padding: 10px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; color: #333; transition: 0.2s; }
+    .btn-chip.selected { background: #007bff; color: white; }
+    .ai-btn { background: #8e44ad; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%; font-size: 15px; }
+    #review-box { width: 100%; height: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; box-sizing: border-box; }
+    .main-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
+  </style>
+  <!-- Google Generative AI SDK Load કરે છે -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.run/@google/genai"
+      }
+    }
+  </script>
+</head>
+<body>
+
+<div class="card">
+  <h2>અમારો અનુભવ કેવો રહ્યો?</h2>
+  <p>તમને શું ગમ્યું તે પસંદ કરો:</p>
   
-  // 🔴 ૧. તમારી નવી જનરેટ કરેલી Gemini API Key ના ૩ ભાગ અહીં મૂકો
+  <div class="chips-container">
+    <button class="btn-chip" onclick="toggleChip(this)">સારી ક્વોલિટી</button>
+    <button class="btn-chip" onclick="toggleChip(this)">સરસ કલેક્શન</button>
+    <button class="btn-chip" onclick="toggleChip(this)">વ્યાજબી ભાવ</button>
+    <button class="btn-chip" onclick="toggleChip(this)">સારુ વર્તન</button>
+  </div>
+
+  <button class="ai-btn" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button>
+
+  <textarea id="review-box" placeholder="અહીં AI રિવ્યુ તૈયાર થશે..."></textarea>
+
+  <button class="main-btn" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
+</div>
+
+<script type="module">
+  import { GoogleGenAI } from "@google/genai";
+
+  // 🔴 ૧. તમારી API Key ના ૩ ટુકડા અહીં મૂકો
   const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_Wu5-"; 
-  const keyPart2 = "8CC8VatlsYAVHhtw"; 
-  const keyPart3 = "C22YXp26GIKqQ"; 
-  
+  const keyPart2 = "8CC8VatlsYAVHhtwC22"; 
+  const keyPart3 = "YXp26GIKqQ"; 
   const GEMINI_API_KEY = keyPart1 + keyPart2 + keyPart3;
 
-  // 🔴 ૨. તમારી ગૂગલ રિવ્યુ લિંક અહીં મૂકો
+  // 🔴 ૨. તમારી Google Review ની લિંક અહીં મૂકો
   const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
 
-  function toggleChip(el) {
+  let selectedKeywords = [];
+
+  window.toggleChip = function(el) {
     el.classList.toggle('selected');
     const val = el.innerText;
     if (selectedKeywords.includes(val)) {
@@ -21,7 +69,7 @@
     }
   }
 
-  async function generateReview() {
+  window.generateReview = async function() {
     if(selectedKeywords.length === 0) {
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
       return;
@@ -31,26 +79,17 @@
     
     const promptText = `Write a short, natural 2-sentence positive review in simple Gujarati for a clothing store highlighting these aspects: ${selectedKeywords.join(", ")}. Do not use quotes or introductory words.`;
 
-    // 💡 અહીં સુધારેલું નવું ૨.૦ મોડેલ URL છે:
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: promptText }]
-          }]
-        })
+      // Google SDK નો ઉપયોગ કરીને સીધો જ કોલ
+      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: promptText,
       });
 
-      const data = await response.json();
-      
-      if (data.candidates && data.candidates[0].content.parts[0].text) {
-        reviewBox.value = data.candidates[0].content.parts[0].text.trim();
-      } else if(data.error) {
-        alert("API Error: " + data.error.message);
+      if (response && response.text) {
+        reviewBox.value = response.text.trim();
+      } else {
         reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
       }
     } catch(err) {
@@ -60,15 +99,18 @@
     }
   }
 
-  function copyAndRedirect() {
-    const text = document.getElementById("review-box").value;
-    if(!text || text.includes("લખી રહ્યું છે")) {
+  window.copyAndRedirect = function() {
+    const text = document.getElementById("review-box");
+    if(!text.value || text.value.includes("લખી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(text.value).then(() => {
       alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ઓપન થશે ત્યાં Paste કરીને Post કરો.");
       window.location.href = GOOGLE_REVIEW_LINK;
     });
   }
 </script>
+
+</body>
+</html>
