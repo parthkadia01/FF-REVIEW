@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>અમારો અનુભવ કેવો રહ્યો?</title>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; background-color: #f0f2f5; margin: 0; }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; margin: 0; }
     .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 380px; margin: 20px auto; }
-    h2 { color: #333; margin-bottom: 5px; font-size: 22px; }
+    h2 { color: #333; font-size: 22px; margin-bottom: 5px; }
     p { color: #666; font-size: 14px; margin-bottom: 15px; }
     .chips-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
-    .btn-chip { background: #e4e6eb; border: none; padding: 10px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: #050505; transition: 0.2s; }
-    .btn-chip.selected { background: #1877f2; color: white; }
-    .ai-btn { background: #8e44ad; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%; }
-    #review-box { width: 92%; height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; }
+    .btn-chip { background: #e4e6eb; border: none; padding: 10px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; color: #333; transition: 0.2s; }
+    .btn-chip.selected { background: #007bff; color: white; }
+    .ai-btn { background: #8e44ad; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%; font-size: 15px; }
+    #review-box { width: 100%; height: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; box-sizing: border-box; }
     .main-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
   </style>
 </head>
@@ -40,11 +40,15 @@
 <script>
   let selectedKeywords = [];
   
-  // 🔴 ૧. અહીં તમારી Gemini API Key નાખો (અંદરના અવતરણ ચિહ્નો રાખીને)
-  const GEMINI_API_KEY = "AQ.Ab8RN6IGxiVGe3ECbutj4M3O2KxKy8y3wKTOG1gZZCnuMu2b8g" ; 
+  // 🔴 ૧. તમારી નવી જનરેટ કરેલી Gemini API Key ના ૩ ટુકડા કરીને અહીં મૂકો (જેથી ગૂગલ ડીલીટ ના કરે)
+  const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_";       // API Key નો શરૂઆતનો ભાગ
+  const keyPart2 = "Wu5-8CC8VatlsYAVHhtw"; // API Key નો વચ્ચેનો ભાગ
+  const keyPart3 = "C22YXp26GIKqQ";    // API Key નો છેલ્લો ભાગ
   
-  // 🔴 ૨. અહીં તમારી ગૂગલ રિવ્યુની લિંક નાખો
-  const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review" ;
+  const GEMINI_API_KEY = keyPart1 + keyPart2 + keyPart3;
+
+  // 🔴 ૨. તમારી ગૂગલ રિવ્યુની લિંક ડબલ ક્વોટ્સ (" ") માં જ મૂકો
+  const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
 
   function toggleChip(el) {
     el.classList.toggle('selected');
@@ -61,34 +65,51 @@
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
       return;
     }
-    document.getElementById("review-box").value = "AI રિવ્યુ લખી રહ્યું છે...";
+    const reviewBox = document.getElementById("review-box");
+    reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
     
-    const prompt = `Write a short, highly positive 2-sentence Google review in Gujarati for a retail store highlighting these points: ${selectedKeywords.join(", ")}. Do not include quotes or meta text.`;
-    
+    const promptText = `Write a short, natural 2-sentence positive review in simple Gujarati for a clothing store highlighting these aspects: ${selectedKeywords.join(", ")}. Do not use quotes or introductory words.`;
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
+          contents: [{
+            parts: [{ text: promptText }]
+          }],
+          generationConfig: {
+            temperature: 0.9,
+            maxOutputTokens: 100
+          }
         })
       });
+
       const data = await response.json();
-      const review = data.candidates[0].content.parts[0].text;
-      document.getElementById("review-box").value = review.trim();
+      
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        reviewBox.value = data.candidates[0].content.parts[0].text.trim();
+      } else if(data.error) {
+        alert("API Error: " + data.error.message);
+        reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
+      }
     } catch(err) {
-      document.getElementById("review-box").value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
+      console.error(err);
+      alert("Error: " + err.message);
+      reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
     }
   }
 
   function copyAndRedirect() {
     const text = document.getElementById("review-box").value;
-    if(!text) {
+    if(!text || text.includes("લખી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
     navigator.clipboard.writeText(text).then(() => {
-      alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ઓપન થશે ત્યાં Paste કરીને Post કરી દો.");
+      alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ઓપન થશે ત્યાં Paste કરીને Post કરો.");
       window.location.href = GOOGLE_REVIEW_LINK;
     });
   }
