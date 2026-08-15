@@ -16,14 +16,6 @@
     #review-box { width: 100%; height: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; box-sizing: border-box; }
     .main-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
   </style>
-  <!-- Google Generative AI SDK Load કરે છે -->
-  <script type="importmap">
-    {
-      "imports": {
-        "@google/genai": "https://esm.run/@google/genai"
-      }
-    }
-  </script>
 </head>
 <body>
 
@@ -45,21 +37,18 @@
   <button class="main-btn" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
 </div>
 
-<script type="module">
-  import { GoogleGenAI } from "@google/genai";
-
-  // 🔴 ૧. તમારી API Key ના ૩ ટુકડા અહીં મૂકો
-  const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_Wu5-"; 
-  const keyPart2 = "8CC8VatlsYAVHhtwC22"; 
-  const keyPart3 = "YXp26GIKqQ"; 
+<script>
+  let selectedKeywords = [];
+  
+  // 🔴 ૧. તમારી API Key ના ૩ કટકા અહીં મૂકો
+  const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_"; 
+  const keyPart2 = "Wu5-8CC8VatlsYAVHhtw"; 
+  const keyPart3 = "C22YXp26GIKqQ"; 
   const GEMINI_API_KEY = keyPart1 + keyPart2 + keyPart3;
 
-  // 🔴 ૨. તમારી Google Review ની લિંક અહીં મૂકો
-  const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
-
-  let selectedKeywords = [];
-
-  window.toggleChip = function(el) {
+  // 🔴 ૨. તમારી Google Review લિંક અહીં મૂકો
+  const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review
+  function toggleChip(el) {
     el.classList.toggle('selected');
     const val = el.innerText;
     if (selectedKeywords.includes(val)) {
@@ -69,7 +58,7 @@
     }
   }
 
-  window.generateReview = async function() {
+  async function generateReview() {
     if(selectedKeywords.length === 0) {
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
       return;
@@ -77,35 +66,39 @@
     const reviewBox = document.getElementById("review-box");
     reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
     
-    const promptText = `Write a short, natural 2-sentence positive review in simple Gujarati for a clothing store highlighting these aspects: ${selectedKeywords.join(", ")}. Do not use quotes or introductory words.`;
+    const promptText = `Write a short 2-sentence positive Google review in Gujarati for a clothing store highlighting: ${selectedKeywords.join(", ")}. Do not use quotes.`;
+
+    // 💡 Gemini 1.5-flash API call
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
     try {
-      // Google SDK નો ઉપયોગ કરીને સીધો જ કોલ
-      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: promptText,
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: promptText }] }]
+        })
       });
 
-      if (response && response.text) {
-        reviewBox.value = response.text.trim();
+      const data = await response.json();
+      
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        reviewBox.value = data.candidates[0].content.parts[0].text.trim();
       } else {
         reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
       }
     } catch(err) {
-      console.error(err);
-      alert("Error: " + err.message);
       reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
     }
   }
 
-  window.copyAndRedirect = function() {
-    const text = document.getElementById("review-box");
-    if(!text.value || text.value.includes("લખી રહ્યું છે")) {
+  function copyAndRedirect() {
+    const text = document.getElementById("review-box").value;
+    if(!text || text.includes("લખી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
-    navigator.clipboard.writeText(text.value).then(() => {
+    navigator.clipboard.writeText(text).then(() => {
       alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ઓપન થશે ત્યાં Paste કરીને Post કરો.");
       window.location.href = GOOGLE_REVIEW_LINK;
     });
