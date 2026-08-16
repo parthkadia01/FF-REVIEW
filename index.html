@@ -13,8 +13,10 @@
     .btn-chip { background: #e4e6eb; border: none; padding: 10px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; color: #333; transition: 0.2s; }
     .btn-chip.selected { background: #007bff; color: white; }
     .ai-btn { background: #8e44ad; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%; font-size: 15px; }
+    .ai-btn:disabled { opacity: 0.65; cursor: wait; }
     #review-box { width: 100%; height: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; box-sizing: border-box; }
     .main-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
+    .main-btn:disabled { opacity: 0.65; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -22,35 +24,35 @@
 <div class="card">
   <h2>અમારો અનુભવ કેવો રહ્યો?</h2>
   <p>તમને શું ગમ્યું તે પસંદ કરો:</p>
-  
+
   <div class="chips-container">
-    <button class="btn-chip" onclick="toggleChip(this)">સારી ક્વોલિટી</button>
-    <button class="btn-chip" onclick="toggleChip(this)">સરસ કલેક્શન</button>
-    <button class="btn-chip" onclick="toggleChip(this)">વ્યાજબી ભાવ</button>
-    <button class="btn-chip" onclick="toggleChip(this)">સારુ વર્તન</button>
+    <button class="btn-chip" type="button" onclick="toggleChip(this)">સારી ક્વોલિટી</button>
+    <button class="btn-chip" type="button" onclick="toggleChip(this)">સરસ કલેક્શન</button>
+    <button class="btn-chip" type="button" onclick="toggleChip(this)">વ્યાજબી ભાવ</button>
+    <button class="btn-chip" type="button" onclick="toggleChip(this)">સારું વર્તન</button>
   </div>
 
-  <button class="ai-btn" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button>
+  <button id="ai-btn" class="ai-btn" type="button" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button>
 
-  <textarea id="review-box" placeholder="અહીં AI રિવ્યુ તૈયાર થશે..."></textarea>
+  <textarea id="review-box" placeholder="અહીં AI રિવ્યુ તૈયાર થશે..." aria-label="AI review"></textarea>
 
-  <button class="main-btn" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
+  <button id="copy-btn" class="main-btn" type="button" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
 </div>
 
 <script>
   let selectedKeywords = [];
-  
-  // 🔴 ૧. તમારી Gemini API Key ના ૩ કટકા સાદા ડબલ ક્વોટ્સ (" ") માં જ મૂકો
-  const keyPart1 = "AAQ.Ab8RN6ImCJ6J8isM_"; 
-  const keyPart2 = "Wu5-8CC8VatlsYAVHhtw"; 
-  const keyPart3 = "C22YXp26GIKqQ"; 
-  
-  // 🔴 ૨. તમારી Google Review ની લિંક અહીં મૂકો
+
+  // IMPORTANT: Gemini API key is NOT stored in this public file.
+  // Set this to your deployed secure backend URL.
+  // Example: https://YOUR-BACKEND-DOMAIN/api/generate-review
+  const REVIEW_API_URL = "YOUR_SECURE_BACKEND_URL/api/generate-review";
+
   const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
 
   function toggleChip(el) {
     el.classList.toggle('selected');
-    const val = el.innerText;
+    const val = el.innerText.trim();
+
     if (selectedKeywords.includes(val)) {
       selectedKeywords = selectedKeywords.filter(k => k !== val);
     } else {
@@ -59,54 +61,69 @@
   }
 
   async function generateReview() {
-    if(selectedKeywords.length === 0) {
+    if (selectedKeywords.length === 0) {
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
       return;
     }
-    const reviewBox = document.getElementById("review-box");
-    reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
-    
-    const fullApiKey = keyPart1.trim() + keyPart2.trim() + keyPart3.trim();
-    const promptText = `Write a short 2-sentence positive Google review in simple Gujarati for a garment store highlighting: ${selectedKeywords.join(", ")}. Do not use quotation marks.`;
 
-    // 💡 સાચું REST endpoint
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${fullApiKey}`;
+    if (REVIEW_API_URL.includes("YOUR_SECURE_BACKEND_URL")) {
+      alert("Secure Gemini backend હજુ configure કરવામાં આવ્યું નથી.");
+      return;
+    }
+
+    const reviewBox = document.getElementById("review-box");
+    const aiBtn = document.getElementById("ai-btn");
+    const copyBtn = document.getElementById("copy-btn");
+
+    reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
+    aiBtn.disabled = true;
+    copyBtn.disabled = true;
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(REVIEW_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: promptText }]
-          }]
-        })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ keywords: selectedKeywords })
       });
 
-      const data = await response.json();
-      
-      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
-        reviewBox.value = data.candidates[0].content.parts[0].text.trim();
-      } else if (data.error) {
-        alert("Google API Error: " + data.error.message);
-        reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || `Server error (${response.status})`);
       }
-    } catch(err) {
-      alert("Network/Fetch Error: " + err.message);
-      reviewBox.value = "અહીં ખરીદી કરવાનો અનુભવ ખૂબ જ સરસ રહ્યો! ક્વોલિટી અને સર્વિસ ઉત્તમ છે.";
+
+      if (!data.review || typeof data.review !== "string") {
+        throw new Error("Gemini તરફથી valid review મળ્યો નથી.");
+      }
+
+      reviewBox.value = data.review.trim();
+      copyBtn.disabled = false;
+    } catch (err) {
+      reviewBox.value = "";
+      alert("રિવ્યુ જનરેટ થઈ શક્યો નથી: " + err.message);
+    } finally {
+      aiBtn.disabled = false;
+      copyBtn.disabled = false;
     }
   }
 
-  function copyAndRedirect() {
-    const text = document.getElementById("review-box").value;
-    if(!text || text.includes("લખી રહ્યું છે")) {
+  async function copyAndRedirect() {
+    const text = document.getElementById("review-box").value.trim();
+
+    if (!text || text.includes("લખી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
-    navigator.clipboard.writeText(text).then(() => {
-      alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ઓપન થશે ત્યાં Paste કરીને Post કરો.");
+
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ખુલશે. ત્યાં Paste કરીને Post કરો.");
       window.location.href = GOOGLE_REVIEW_LINK;
-    });
+    } catch (err) {
+      alert("કોપી થઈ શક્યું નથી. કૃપા કરીને Review text manually copy કરો અને ફરી પ્રયાસ કરો.");
+    }
   }
 </script>
 
