@@ -41,7 +41,7 @@
   let selectedKeywords = [];
   
   // 🔴 ૧. તમારી Gemini API Key ના ૩ ભાગ અહીં મૂકો
-  const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_"; 
+  const keyPart1 = "AQ.Ab8RN6ImCJ6J8isM_  "; 
   const keyPart2 = "Wu5-8CC8VatlsYAVHhtw"; 
   const keyPart3 = "C22YXp26GIKqQ"; 
   
@@ -68,11 +68,10 @@
     const reviewBox = document.getElementById("review-box");
     reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
     
-    // Prompt Text
-    const promptText = `Write a short, unique 2-sentence positive Google review in simple Gujarati for a retail garment shop highlighting: ${selectedKeywords.join(", ")}. Make each response slightly different and do not include quotes.`;
+    const promptText = `Write a unique 2-sentence positive Google review in Gujarati for a garment store highlighting: ${selectedKeywords.join(", ")}. Do not use quote marks.`;
 
-    // 💡 સાચું REST API URL (gemini-1.5-flash):
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    // 💡 સુધારેલું સાચું Endpoint (gemini-2.0-flash):
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
     try {
       const response = await fetch(url, {
