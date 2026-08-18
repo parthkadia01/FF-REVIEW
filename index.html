@@ -41,11 +41,9 @@
 
 <script>
   let selectedKeywords = [];
-
-  // Secure Vercel backend. The Gemini API key is never exposed in this public file.
   const REVIEW_API_URL = "https://ff-review.vercel.app/api/generate-review";
-
   const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
+  const RECENT_KEY = "ff_review_recent_v2";
 
   function toggleChip(el) {
     el.classList.toggle('selected');
@@ -58,6 +56,23 @@
     }
   }
 
+  function getRecentReviews() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+      return Array.isArray(saved) ? saved.slice(0, 10) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveRecentReview(review) {
+    try {
+      const current = getRecentReviews().filter(item => item !== review);
+      current.unshift(review);
+      localStorage.setItem(RECENT_KEY, JSON.stringify(current.slice(0, 10)));
+    } catch (_) {}
+  }
+
   async function generateReview() {
     if (selectedKeywords.length === 0) {
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
@@ -68,17 +83,18 @@
     const aiBtn = document.getElementById("ai-btn");
     const copyBtn = document.getElementById("copy-btn");
 
-    reviewBox.value = "AI રિવ્યુ લખી રહ્યું છે, કૃપા કરીને રાહ જુઓ...";
+    reviewBox.value = "AI રિવ્યુ તૈયાર કરી રહ્યું છે...";
     aiBtn.disabled = true;
     copyBtn.disabled = true;
 
     try {
       const response = await fetch(REVIEW_API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ keywords: selectedKeywords })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keywords: selectedKeywords,
+          recentReviews: getRecentReviews()
+        })
       });
 
       const data = await response.json().catch(() => ({}));
@@ -92,20 +108,21 @@
       }
 
       reviewBox.value = data.review.trim();
+      saveRecentReview(reviewBox.value);
       copyBtn.disabled = false;
     } catch (err) {
       reviewBox.value = "";
       alert("રિવ્યુ જનરેટ થઈ શક્યો નથી: " + err.message);
     } finally {
       aiBtn.disabled = false;
-      copyBtn.disabled = false;
+      copyBtn.disabled = !reviewBox.value.trim();
     }
   }
 
   async function copyAndRedirect() {
     const text = document.getElementById("review-box").value.trim();
 
-    if (!text || text.includes("લખી રહ્યું છે")) {
+    if (!text || text.includes("AI રિવ્યુ તૈયાર કરી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
