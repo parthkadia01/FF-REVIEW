@@ -1,7 +1,10 @@
 export default async function handler(req, res) {
-  const allowedOrigin = 'https://parthkadia01.github.io';
-
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+  const allowedOrigins = new Set([
+    'https://parthkadia01.github.io',
+    'https://ff-review.vercel.app'
+  ]);
+  const origin = req.headers.origin;
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.has(origin) ? origin : 'https://parthkadia01.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Vary', 'Origin');
@@ -10,59 +13,63 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { keywords, recentReviews } = req.body || {};
-    const cleanKeywords = Array.isArray(keywords)
-      ? keywords.map((item) => String(item).trim()).filter(Boolean).slice(0, 4)
+    const body = req.body || {};
+    const cleanKeywords = Array.isArray(body.keywords)
+      ? body.keywords.map((item) => String(item).trim()).filter(Boolean).slice(0, 8)
       : [];
-    const cleanRecentReviews = Array.isArray(recentReviews)
-      ? recentReviews.map((item) => String(item).trim()).filter(Boolean).slice(0, 10)
+    const cleanRecentReviews = Array.isArray(body.recentReviews)
+      ? body.recentReviews.map((item) => String(item).trim()).filter(Boolean).slice(0, 12)
       : [];
+    const rating = Number(body.rating);
 
     if (!cleanKeywords.length) {
-      return res.status(400).json({ error: 'કૃપા કરીને ઓછામાં ઓછું એક option પસંદ કરો.' });
+      return res.status(400).json({ error: 'કૃપા કરીને ઓછામાં ઓછું એક અનુભવ option પસંદ કરો.' });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'Gemini API key is not configured.' });
+    if (!apiKey) return res.status(500).json({ error: 'Review service is not configured.' });
 
     const modes = [
-      'સાદી સ્થાનિક બોલચાલની ગુજરાતી.',
-      'casual Gujarati + થોડું natural English mix.',
-      'ટૂંકી અને સીધી customer-style ભાષા.',
-      'મિત્રને shopping experience કહેતા હોઈએ એવી ભાષા.',
-      'warm પરંતુ understated ભાષા; over-praise નહીં.',
-      'ખરીદી પછીનો simple personal experience.',
-      'modern WhatsApp જેવી natural Gujarati.',
-      'Gujarati મુખ્ય અને માત્ર 1-2 સામાન્ય English words.',
-      'normal Google Maps review જેવી conversational ભાષા.',
-      'નાની વાતમાં સંતોષ વ્યક્ત કરતો genuine-sounding tone.'
+      'સાદી સ્થાનિક બોલચાલની ગુજરાતી',
+      'casual Gujarati + 1-2 natural English words',
+      'ટૂંકી customer-style ભાષા',
+      'મિત્રને shopping experience કહેતા હોઈએ એવી ભાષા',
+      'warm પરંતુ understated ભાષા',
+      'ખરીદી પછીનો simple personal experience',
+      'modern WhatsApp જેવી natural Gujarati',
+      'normal Google Maps review જેવી conversational ભાષા',
+      'નાની વાતમાં સંતોષ વ્યક્ત કરતો tone',
+      'થોડી informal પરંતુ સાફ ગુજરાતી'
     ];
-
     const mode = modes[Math.floor(Math.random() * modes.length)];
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+    const ratingText = Number.isFinite(rating) && rating >= 1 && rating <= 5 ? `${rating}/5 stars` : 'not specified';
     const previousBlock = cleanRecentReviews.length
-      ? `\nઆ અગાઉના reviews છે. કોઈ sentence અથવા તેની નજીકનું wording ફરી ન વાપરવું:\n${cleanRecentReviews.map((r, i) => `${i + 1}. ${r}`).join('\n')}`
+      ? `\nઆ અગાઉના drafts છે. તેમનું wording, opening અથવા sentence structure ફરી ન વાપરવું:\n${cleanRecentReviews.map((r, i) => `${i + 1}. ${r}`).join('\n')}`
       : '';
 
-    const prompt = `તમે retail garment store માટે authentic customer review drafting assistant છો.
-ગ્રાહકે પસંદ કરેલા અનુભવ pointsના આધારે જ review લખો. કોઈ ખોટી ખરીદી, product, discount, staff member, family, wedding અથવા બીજી personal detail invent ન કરો.
+    const prompt = `તમે Fashion Factory જેવા retail garment store માટે customer review DRAFT assistant છો.
+ગ્રાહકે પસંદ કરેલા અનુભવ points અને rating પરથી જ એક natural draft બનાવો. Customerએ પસંદ ન કરેલી કોઈ વસ્તુ, product, discount, staff member, family, wedding, location અથવા personal detail invent ન કરો.
 
-પસંદ કરેલા points:
+Customer rating: ${ratingText}
+પસંદ કરેલા અનુભવ points:
 ${cleanKeywords.map((item) => `- ${item}`).join('\n')}
 
 Writing mode: ${mode}
 
 નિયમો:
-1. ફક્ત 2 natural વાક્યો.
-2. સામાન્ય ગુજરાતી customerએ પોતે લખ્યું હોય એવું લાગે; marketing copy નહીં.
+1. ફક્ત 2 natural sentences.
+2. સામાન્ય ગુજરાતી customerએ પોતે લખ્યું હોય એવું લાગે; advertising copy નહીં.
 3. Selected points naturally combine કરો; list ન કરો.
-4. દરેક requestમાં opening, structure, verbs અને adjectives બદલો.
-5. Gujarati + English mix ક્યારેક જ; collection, quality, shopping, experience, overall જેવા સામાન્ય words પૂરતા છે.
-6. 'ખૂબ જ ઉત્તમ', 'અદ્ભુત', 'બેસ્ટ શોપ', 'મસ્ટ વિઝિટ', 'highly recommended' જેવી promotional phrases ટાળો.
-7. emoji, quotes, bullets, heading અથવા hashtags નહીં.
-8. દુકાનનું નામ/location ઉમેરશો નહીં.
-9. કોઈ fake personal detail ઉમેરશો નહીં.
-10. જાણબૂઝીને spelling mistakes ન કરો.
+4. દરેક requestમાં opening, structure, verbs અને adjectives બદલાવો.
+5. Gujarati મુખ્ય રાખો; ક્યારેક માત્ર 1-2 સામાન્ય English words જેવા quality, collection, shopping, experience, overall વાપરી શકો.
+6. Rating 4-5 હોય તો positive પરંતુ understated રાખો; over-praise નહીં. Rating 3 હોય તો balanced રાખો. Rating 1-2 હોય તો selected experience પ્રમાણે honest/neutral tone રાખો.
+7. 'ખૂબ જ ઉત્તમ', 'અદ્ભુત', 'બેસ્ટ શોપ', 'મસ્ટ વિઝિટ', 'highly recommended' જેવી promotional phrases ટાળો.
+8. emoji, quotes, bullets, heading અથવા hashtags નહીં.
+9. દુકાનનું નામ અથવા location ઉમેરશો નહીં.
+10. fake personal detail ન ઉમેરો.
+11. જાણબૂઝીને spelling mistakes ન કરો.
+12. Review customer પોતાની રીતે edit કરી શકે એવો short draft હોવો જોઈએ.
 ${previousBlock}
 
 Variation nonce: ${nonce}
@@ -72,13 +79,16 @@ Variation nonce: ${nonce}
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
         body: JSON.stringify({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
             maxOutputTokens: 120,
-            temperature: 1.05,
-            topP: 0.95,
+            temperature: 1.1,
+            topP: 0.96,
             thinkingConfig: { thinkingLevel: 'minimal' }
           }
         })
@@ -90,77 +100,71 @@ Variation nonce: ${nonce}
     if (response.ok) {
       let review = data?.candidates?.[0]?.content?.parts?.map((part) => part?.text || '').join(' ')
         .replace(/\s+/g, ' ').trim();
-      if (!review) return res.status(502).json({ error: 'Gemini returned an empty review.' });
+      if (!review) return res.status(502).json({ error: 'Review service returned an empty result.' });
       review = review.replace(/^['"“”]+|['"“”]+$/g, '').replace(/^Review\s*:\s*/i, '').trim();
-      return res.status(200).json({ review, source: 'gemini' });
+      return res.status(200).json({ review });
     }
 
-    // Gemini free-tier quota can temporarily return 429. Keep the review tool usable
-    // by falling back to local human-style wording based only on the selected points.
     if (response.status === 429 || data?.error?.status === 'RESOURCE_EXHAUSTED') {
-      const fallback = makeLocalReview(cleanKeywords, cleanRecentReviews);
-      return res.status(200).json({ review: fallback, source: 'local-fallback' });
+      return res.status(200).json({ review: makeLocalReview(cleanKeywords, cleanRecentReviews, rating) });
     }
 
-    return res.status(response.status).json({ error: data?.error?.message || 'Gemini API failed.' });
+    return res.status(response.status).json({ error: data?.error?.message || 'Review service failed.' });
   } catch (error) {
-    // Network/API failure: use the same safe local fallback so customers are not blocked.
     try {
       const body = req.body || {};
-      const kws = Array.isArray(body.keywords) ? body.keywords.map(String).slice(0, 4) : [];
-      const recent = Array.isArray(body.recentReviews) ? body.recentReviews.map(String).slice(0, 10) : [];
-      if (kws.length) return res.status(200).json({ review: makeLocalReview(kws, recent), source: 'local-fallback' });
+      const kws = Array.isArray(body.keywords) ? body.keywords.map(String).slice(0, 8) : [];
+      const recent = Array.isArray(body.recentReviews) ? body.recentReviews.map(String).slice(0, 12) : [];
+      const rating = Number(body.rating);
+      if (kws.length) return res.status(200).json({ review: makeLocalReview(kws, recent, rating) });
     } catch (_) {}
-    return res.status(500).json({ error: error instanceof Error ? error.message : 'Unexpected server error.' });
+    return res.status(500).json({ error: 'Review service is temporarily unavailable.' });
   }
 }
 
-function makeLocalReview(keywords, recentReviews) {
+function makeLocalReview(keywords, recentReviews, rating) {
   const has = (name) => keywords.includes(name);
   const quality = has('સારી ક્વોલિટી');
   const collection = has('સરસ કલેક્શન');
   const price = has('વ્યાજબી ભાવ');
   const behavior = has('સારું વર્તન');
+  const fit = has('સારો ફિટિંગ');
+  const variety = has('સારી વેરાયટી');
+  const shopping = has('સરળ શોપિંગ');
+  const staff = has('હેલ્પફુલ સ્ટાફ');
+  const ratingNum = Number.isFinite(rating) ? rating : 5;
 
   const first = [
     quality && collection ? 'અહીં કપડાંની quality અને collection બંને મને ગમ્યા.' :
     quality ? 'કપડાંની quality સારી લાગી અને પસંદગી પણ સંતોષકારક રહી.' :
     collection ? 'અહીંનું collection જોઈને સારું લાગ્યું, variety પણ સારી છે.' :
     price ? 'અહીં ભાવ reasonable લાગ્યા અને shopping કરવી સરળ રહી.' :
-    behavior ? 'અહીં વાતાવરણ અને વર્તન બંને સારા લાગ્યા.' :
+    behavior ? 'અહીંનું વર્તન સારું લાગ્યું અને shopping comfortable રહી.' :
+    fit ? 'કપડાંનું fitting મને સારું લાગ્યું અને પહેરવામાં comfortable છે.' :
+    variety ? 'અહીં variety સારી જોવા મળી એટલે પસંદગી કરવામાં સરળતા રહી.' :
+    shopping ? 'અહીં shopping કરવી simple અને convenient લાગી.' :
+    staff ? 'Staff helpful લાગ્યો અને shopping દરમિયાન સારી રીતે guide કર્યું.' :
     'અહીંથી shopping કરવાનો overall અનુભવ સારો રહ્યો.',
-    quality ? 'Quality જોઈને ખરેખર સંતોષ થયો.' :
-    collection ? 'Collection માં સારી variety જોવા મળી.' :
-    price ? 'ભાવ મુજબ વસ્તુઓ સારી લાગી.' :
-    behavior ? 'Staffનું વર્તન પણ friendly લાગ્યું.' :
-    'Simple અને સારો shopping experience રહ્યો.',
-    collection && price ? 'Collection સારું છે અને ભાવ પણ reasonable લાગ્યા.' :
-    quality && behavior ? 'Quality સારી છે અને staffનું વર્તન પણ ગમ્યું.' :
-    'મને અહીંનો experience comfortable અને સારો લાગ્યો.'
-  ].filter(Boolean);
+    quality ? 'Quality જોઈને સંતોષ થયો.' : collection ? 'Collectionમાં સારી variety જોવા મળી.' : price ? 'ભાવ પણ યોગ્ય લાગ્યા.' : behavior ? 'Staffનું વર્તન friendly લાગ્યું.' : fit ? 'Overall fittingથી સંતોષ રહ્યો.' : variety ? 'પસંદગી માટે options સારા હતા.' : shopping ? 'Shoppingમાં વધારે hassle લાગ્યો નહીં.' : staff ? 'જરૂર મુજબ help મળી.' : 'Simple અને સારો shopping experience રહ્યો.'
+  ];
 
   const second = [
-    quality && collection ? 'Overall, ખરીદી કર્યા પછી સંતોષ થયો અને ફરી આવવાનું મન થાય એવું લાગ્યું.' :
-    collection ? 'Overall experience સરસ રહ્યો અને ફરી collection જોવા આવીશ.' :
-    quality ? 'મને તો quality પ્રમાણે shopping worth લાગ્યું.' :
-    price ? 'Overall shopping budget-friendly લાગી.' :
-    behavior ? 'એટલે shopping દરમિયાન કોઈપણ પ્રકારની અસુવિધા લાગી નહીં.' :
-    'નાનો પણ સારો experience રહ્યો.',
-    price && collection ? 'Variety અને ભાવ બંનેને કારણે shopping સારી લાગી.' :
-    quality && price ? 'Quality અને price બંને બાબતે હું satisfied રહ્યો/રહી.' :
-    behavior && collection ? 'Staffના સારા વર્તન સાથે shopping પણ સારી રીતે થઈ.' :
-    'Overall, મને shopping experience ગમ્યો.',
-    quality ? 'Overall, કપડાં જોઈને અને લીધા પછી સંતોષ રહ્યો.' :
-    collection ? 'Variety સારી હોવાથી પસંદગી કરવામાં સરળતા રહી.' :
-    price ? 'ભાવને ધ્યાનમાં રાખીએ તો experience સારો રહ્યો.' :
-    behavior ? 'Friendly વર્તનને કારણે experience comfortable રહ્યો.' :
-    'સાદો અને pleasant experience રહ્યો.'
-  ].filter(Boolean);
+    ratingNum <= 2 ? 'મારા માટે experience average રહ્યો, એટલે આગળથી થોડું વધુ ધ્યાન આપવાની અપેક્ષા છે.' :
+    ratingNum === 3 ? 'Overall experience ઠીક રહ્યો અને કેટલીક બાબતો સારી લાગી.' :
+    quality && price ? 'Quality અને price બંને બાબતે shopping worth લાગી.' :
+    collection && variety ? 'Varietyને કારણે પસંદગી કરવામાં સારી રીતે મદદ મળી.' :
+    behavior && staff ? 'Staffના સારા વર્તનથી shopping વધુ comfortable બની.' :
+    fit ? 'Overall experience comfortable રહ્યો.' :
+    'Overall, shopping કર્યા પછી સંતોષ થયો.',
+    'મને અહીંનો experience natural અને comfortable લાગ્યો.',
+    'Overall shopping સારી રહી અને ફરી આવવાનું મન થાય એવું લાગ્યું.'
+  ];
 
   const candidates = [];
-  for (const a of first) for (const b of second) candidates.push(`${a} ${b}`);
-  const recent = new Set(recentReviews.map((x) => x.trim()));
-  const fresh = candidates.filter((x) => !recent.has(x));
-  const pool = fresh.length ? fresh : candidates;
-  return pool[Math.floor(Math.random() * pool.length)];
+  for (const a of first) for (const b of second) {
+    const text = `${a} ${b}`;
+    if (!recentReviews.includes(text)) candidates.push(text);
+  }
+  if (!candidates.length) candidates.push(`${first[0]} ${second[0]}`);
+  return candidates[Math.floor(Math.random() * candidates.length)];
 }
