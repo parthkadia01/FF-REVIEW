@@ -42,10 +42,8 @@
 <script>
   let selectedKeywords = [];
 
-  // IMPORTANT: Gemini API key is NOT stored in this public file.
-  // Set this to your deployed secure backend URL.
-  // Example: https://YOUR-BACKEND-DOMAIN/api/generate-review
-  const REVIEW_API_URL = "YOUR_SECURE_BACKEND_URL/api/generate-review";
+  // Secure Vercel backend. The Gemini API key is never exposed in this public file.
+  const REVIEW_API_URL = "https://ff-review.vercel.app/api/generate-review";
 
   const GOOGLE_REVIEW_LINK = "https://g.page/r/CZYN9mksn1LhEBM/review";
 
@@ -63,11 +61,6 @@
   async function generateReview() {
     if (selectedKeywords.length === 0) {
       alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");
-      return;
-    }
-
-    if (REVIEW_API_URL.includes("YOUR_SECURE_BACKEND_URL")) {
-      alert("Secure Gemini backend હજુ configure કરવામાં આવ્યું નથી.");
       return;
     }
 
