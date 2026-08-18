@@ -4,35 +4,157 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#08294a">
-  <link rel="icon" type="image/png" sizes="32x32" href="./FASHION%20FACTORY%20LOGO.png?v=3">
-  <link rel="icon" type="image/png" sizes="192x192" href="./FASHION%20FACTORY%20LOGO.png?v=3">
-  <link rel="shortcut icon" href="./FASHION%20FACTORY%20LOGO.png?v=3">
-  <link rel="apple-touch-icon" href="./FASHION%20FACTORY%20LOGO.png?v=3">
+  <meta name="description" content="Fashion Factory customer experience and Google review page.">
+  <link rel="icon" type="image/png" sizes="32x32" href="./FASHION%20FACTORY%20LOGO.png?v=5">
+  <link rel="icon" type="image/png" sizes="192x192" href="./FASHION%20FACTORY%20LOGO.png?v=5">
+  <link rel="shortcut icon" href="./FASHION%20FACTORY%20LOGO.png?v=5">
+  <link rel="apple-touch-icon" href="./FASHION%20FACTORY%20LOGO.png?v=5">
   <title>Fashion Factory | તમારો અનુભવ કેવો રહ્યો?</title>
   <style>
-    :root{--navy:#08294a;--navy-2:#061d35;--gold:#c48600;--gold-light:#e0a52b;--cream:#fffaf0;--text:#17324d;--muted:#6f7880}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:Arial,"Noto Sans Gujarati",sans-serif;color:var(--text);background:radial-gradient(circle at 12% 8%,rgba(196,134,0,.18),transparent 28%),radial-gradient(circle at 90% 92%,rgba(196,134,0,.14),transparent 28%),linear-gradient(145deg,var(--navy-2),var(--navy));display:flex;justify-content:center;align-items:center;padding:22px 14px;overflow-x:hidden}
-    body:before,body:after{content:"";position:fixed;width:180px;height:180px;border:1px solid rgba(224,165,43,.18);border-radius:50%;pointer-events:none}.body:before{top:-95px;left:-80px}.body:after{right:-90px;bottom:-90px}
-    .page{width:100%;max-width:470px;position:relative;z-index:1}.brand-card{background:rgba(255,255,255,.98);border:1px solid rgba(224,165,43,.55);border-radius:28px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.34)}
-    .brand-header{background:linear-gradient(135deg,#fff,#fbf5e8);padding:20px 22px 14px;text-align:center;border-bottom:1px solid rgba(196,134,0,.25)}
-    .logo{display:block;width:min(100%,330px);height:auto;max-height:145px;object-fit:contain;margin:0 auto 8px}.gold-line{width:72px;height:3px;margin:4px auto 8px;border-radius:99px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}.tagline{margin:0;color:#40566c;font-size:12px;letter-spacing:.8px;font-weight:600}
-    .content{padding:22px 20px 24px;text-align:center}h1{margin:0;color:var(--navy);font-size:24px;line-height:1.35;font-weight:800}.subtitle{margin:7px 0 19px;color:var(--muted);font-size:14px}.chips-container{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-bottom:18px}
-    .btn-chip{border:1px solid #d7dce1;background:#f7f8f9;color:var(--navy);padding:10px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}.btn-chip:hover{transform:translateY(-1px)}.btn-chip.selected{background:linear-gradient(135deg,var(--gold-light),var(--gold));border-color:var(--gold);color:#fff;box-shadow:0 5px 15px rgba(196,134,0,.25)}
-    .ai-btn,.main-btn,.instagram-btn{width:100%;border:0;border-radius:12px;font-weight:800;cursor:pointer;transition:.15s}.ai-btn:hover:not(:disabled),.main-btn:hover:not(:disabled),.instagram-btn:hover{transform:translateY(-1px)}.ai-btn{background:linear-gradient(135deg,#0c3b67,#08294a);color:#fff;padding:14px;font-size:16px;box-shadow:0 8px 20px rgba(8,41,74,.22);margin-bottom:13px}.main-btn{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#fff;padding:14px;font-size:15px;margin-top:12px;box-shadow:0 8px 20px rgba(196,134,0,.24)}.instagram-btn{display:block;text-decoration:none;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;padding:14px;font-size:15px;margin-top:12px;box-shadow:0 8px 20px rgba(131,58,180,.22)}.ai-btn:disabled,.main-btn:disabled{opacity:.72;cursor:wait;transform:none}
-    .spinner{display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;vertical-align:-3px;margin-right:7px;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-    #review-box{width:100%;min-height:112px;padding:14px;border:1px solid #d9d1bd;border-radius:13px;background:var(--cream);color:#263b4f;font-size:15px;line-height:1.65;resize:vertical;outline:none;box-shadow:inset 0 1px 3px rgba(0,0,0,.04)}#review-box:focus{border-color:var(--gold-light);box-shadow:0 0 0 3px rgba(196,134,0,.12)}.hint{margin:9px 0 0;color:#8a8f94;font-size:11px;line-height:1.5}.footer{text-align:center;color:rgba(255,255,255,.72);font-size:11px;margin-top:14px;letter-spacing:.4px}
-    @media(max-width:420px){body{padding:12px;align-items:flex-start}.brand-card{margin-top:8px;border-radius:22px}.brand-header{padding:16px 16px 11px}.logo{max-height:120px}.content{padding:19px 15px 20px}h1{font-size:21px}.btn-chip{padding:9px 12px}}
+    :root{--navy:#08294a;--navy2:#061d35;--gold:#c48600;--gold2:#e0a52b;--cream:#fffaf0;--text:#17324d;--muted:#6f7880;--line:#e4e7eb}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;font-family:Arial,"Noto Sans Gujarati",sans-serif;color:var(--text);background:radial-gradient(circle at 10% 5%,rgba(224,165,43,.16),transparent 28%),radial-gradient(circle at 92% 92%,rgba(224,165,43,.12),transparent 30%),linear-gradient(145deg,var(--navy2),var(--navy));display:flex;justify-content:center;align-items:center;padding:18px 14px;overflow-x:hidden}
+    body:before,body:after{content:"";position:fixed;width:190px;height:190px;border:1px solid rgba(224,165,43,.16);border-radius:50%;pointer-events:none}.body:before{top:-100px;left:-80px}.body:after{right:-100px;bottom:-100px}
+    .page{width:100%;max-width:490px;position:relative;z-index:1}.brand-card{background:rgba(255,255,255,.985);border:1px solid rgba(224,165,43,.55);border-radius:28px;overflow:hidden;box-shadow:0 25px 75px rgba(0,0,0,.35)}
+    .brand-header{background:linear-gradient(135deg,#fff,#fbf5e8);padding:19px 22px 13px;text-align:center;border-bottom:1px solid rgba(196,134,0,.25)}.logo{display:block;width:min(100%,330px);height:auto;max-height:145px;object-fit:contain;margin:0 auto 7px}.gold-line{width:74px;height:3px;margin:4px auto 8px;border-radius:99px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}.tagline{margin:0;color:#40566c;font-size:12px;letter-spacing:.8px;font-weight:600}
+    .content{padding:21px 20px 24px;text-align:center}h1{margin:0;color:var(--navy);font-size:25px;line-height:1.35;font-weight:800}.subtitle{margin:6px 0 15px;color:var(--muted);font-size:14px}
+    .rating-title{font-size:12px;color:#7a8188;margin:0 0 6px}.stars{display:flex;justify-content:center;gap:4px;margin:0 0 15px}.star{border:0;background:transparent;color:#cfd4d9;font-size:30px;line-height:1;padding:0 2px;cursor:pointer;transition:.15s}.star:hover,.star.active{color:var(--gold2);transform:scale(1.08)}
+    .section-row{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}.section-label{font-size:12px;color:#7a8188;text-align:left}.clear-btn{border:0;background:transparent;color:#9a6a00;font-size:11px;cursor:pointer;padding:3px 0}.chips-container{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:10px}.btn-chip{border:1px solid #d7dce1;background:#f7f8f9;color:var(--navy);padding:10px 13px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}.btn-chip:hover{transform:translateY(-1px);border-color:#c9a24c}.btn-chip.selected{background:linear-gradient(135deg,var(--gold2),var(--gold));border-color:var(--gold);color:#fff;box-shadow:0 5px 15px rgba(196,134,0,.25)}
+    .more-note{margin:3px 0 14px;color:#8a8f94;font-size:11px}.review-wrap{position:relative}.review-status{display:none;align-items:center;justify-content:center;gap:6px;color:#7c8288;font-size:11px;margin:0 0 7px}.review-status.show{display:flex}.spinner{display:inline-block;width:14px;height:14px;border:2px solid #d7dce1;border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    #review-box{width:100%;min-height:118px;padding:14px;border:1px solid #d9d1bd;border-radius:13px;background:var(--cream);color:#263b4f;font-size:15px;line-height:1.65;resize:vertical;outline:none;box-shadow:inset 0 1px 3px rgba(0,0,0,.04)}#review-box:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(196,134,0,.12)}.hint{margin:8px 0 0;color:#8a8f94;font-size:11px;line-height:1.5}
+    .main-btn,.instagram-btn,.call-btn{width:100%;border:0;border-radius:12px;font-weight:800;cursor:pointer;transition:.15s}.main-btn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#fff;padding:14px;font-size:15px;margin-top:12px;box-shadow:0 8px 20px rgba(196,134,0,.24)}.main-btn:disabled{opacity:.5;cursor:not-allowed}.main-btn:hover:not(:disabled),.instagram-btn:hover,.call-btn:hover{transform:translateY(-1px)}.social-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.instagram-btn,.call-btn{display:block;text-decoration:none;color:#fff;padding:12px 8px;font-size:13px}.instagram-btn{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);box-shadow:0 8px 18px rgba(131,58,180,.18)}.call-btn{background:#173d61;box-shadow:0 8px 18px rgba(8,41,74,.16)}.micro-note{margin:13px 0 0;color:#9a9fa4;font-size:10px}.footer{text-align:center;color:rgba(255,255,255,.72);font-size:11px;margin-top:12px;letter-spacing:.4px}
+    .side-more{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:10;border:1px solid rgba(224,165,43,.55);background:#fff;color:var(--navy);border-radius:14px;padding:11px 8px;writing-mode:vertical-rl;font-weight:800;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);cursor:pointer}.side-more span{color:var(--gold);font-size:15px;margin-bottom:5px}
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);opacity:0;visibility:hidden;transition:.2s;z-index:19}.drawer-backdrop.open{opacity:1;visibility:visible}.drawer{position:fixed;right:0;top:0;height:100%;width:min(340px,88vw);background:#fff;z-index:20;transform:translateX(100%);transition:.25s;box-shadow:-18px 0 45px rgba(0,0,0,.24);padding:24px 18px;overflow:auto}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}.drawer h2{margin:0;color:var(--navy);font-size:21px}.drawer-close{border:0;background:#f3f4f5;border-radius:50%;width:34px;height:34px;font-size:19px;cursor:pointer}.drawer p{margin:4px 0 16px;color:#777;font-size:12px}.drawer-chips{display:flex;flex-wrap:wrap;gap:8px}.drawer-chip{border:1px solid #d7dce1;background:#f8f9fa;color:var(--navy);padding:10px 12px;border-radius:999px;font-weight:700;font-size:13px;cursor:pointer}.drawer-chip.selected{background:var(--navy);border-color:var(--navy);color:#fff}.drawer-info{margin-top:22px;padding:14px;border-radius:14px;background:#fbf5e8;color:#6b5a37;font-size:12px;line-height:1.6}
+    @media(max-width:650px){.side-more{right:6px}.page{max-width:470px}}
+    @media(max-width:420px){body{padding:10px;align-items:flex-start}.brand-card{margin-top:4px;border-radius:22px}.brand-header{padding:15px 15px 10px}.logo{max-height:115px}.content{padding:18px 14px 20px}h1{font-size:21px}.btn-chip{padding:9px 11px}.star{font-size:28px}.social-grid{gap:7px}}
   </style>
 </head>
 <body>
-<main class="page"><section class="brand-card"><header class="brand-header"><img class="logo" alt="FASHION FACTORY" src="FASHION%20FACTORY%20LOGO.png"><div class="gold-line"></div><p class="tagline">FASHION AS UNIQUE AS YOU ARE</p></header><div class="content"><h1>તમારો અનુભવ કેવો રહ્યો?</h1><p class="subtitle">તમને શું ગમ્યું તે પસંદ કરો</p><div class="chips-container"><button class="btn-chip" type="button" onclick="toggleChip(this)">સારી ક્વોલિટી</button><button class="btn-chip" type="button" onclick="toggleChip(this)">સરસ કલેક્શન</button><button class="btn-chip" type="button" onclick="toggleChip(this)">વ્યાજબી ભાવ</button><button class="btn-chip" type="button" onclick="toggleChip(this)">સારું વર્તન</button></div><button id="ai-btn" class="ai-btn" type="button" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button><textarea id="review-box" placeholder="તમારા અનુભવ પરથી અહીં રિવ્યુ તૈયાર થશે..." aria-label="AI review"></textarea><p id="review-hint" class="hint">રિવ્યુ પસંદ ન આવે તો ફરીથી <b>✨ AI રિવ્યુ બનાવો</b> દબાવો — દર વખતે નવો અને અલગ review મળશે.</p><button id="copy-btn" class="main-btn" type="button" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button><a class="instagram-btn" href="https://insta.openinapp.co/dztxm" target="_blank" rel="noopener noreferrer">📸 Instagram પર Follow કરો</a></div></section><div class="footer">FASHION FACTORY • MODASA</div></main>
+  <button class="side-more" type="button" onclick="openDrawer()" aria-label="વધુ અનુભવ વિકલ્પો"><span>＋</span>વધુ વિકલ્પો</button>
+  <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-head"><h2>વધુ વિકલ્પો</h2><button class="drawer-close" type="button" onclick="closeDrawer()">×</button></div>
+    <p>તમારો સાચો અનુભવ જેવો હોય તેવા points પસંદ કરો.</p>
+    <div id="drawer-chips" class="drawer-chips"></div>
+    <div class="drawer-info">કોઈ option પર tap કરશો એટલે review ફરીથી તૈયાર થશે. તમે પસંદ કરેલા options જ reviewમાં ધ્યાનમાં લેવામાં આવશે.</div>
+  </aside>
+
+  <main class="page">
+    <section class="brand-card">
+      <header class="brand-header">
+        <img class="logo" alt="FASHION FACTORY" src="FASHION%20FACTORY%20LOGO.png">
+        <div class="gold-line"></div>
+        <p class="tagline">FASHION AS UNIQUE AS YOU ARE</p>
+      </header>
+      <div class="content">
+        <h1>તમારો અનુભવ કેવો રહ્યો?</h1>
+        <p class="subtitle">તમને જે ખરેખર ગમ્યું હોય તે પસંદ કરો</p>
+
+        <p class="rating-title">તમારો અનુભવ કેટલો ગમ્યો?</p>
+        <div id="stars" class="stars" aria-label="Rating">
+          <button class="star" type="button" data-rating="1" aria-label="1 star">★</button>
+          <button class="star" type="button" data-rating="2" aria-label="2 stars">★</button>
+          <button class="star" type="button" data-rating="3" aria-label="3 stars">★</button>
+          <button class="star" type="button" data-rating="4" aria-label="4 stars">★</button>
+          <button class="star" type="button" data-rating="5" aria-label="5 stars">★</button>
+        </div>
+
+        <div class="section-row"><span class="section-label">તમને શું ગમ્યું?</span><button class="clear-btn" type="button" onclick="clearAll()">Clear</button></div>
+        <div id="chips" class="chips-container"></div>
+        <p class="more-note">વધુ અનુભવ માટે જમણી બાજુ <b>વધુ વિકલ્પો</b> ખોલો</p>
+
+        <div class="review-wrap">
+          <div id="review-status" class="review-status"><span class="spinner"></span><span>તમારા માટે review તૈયાર થઈ રહ્યો છે...</span></div>
+          <textarea id="review-box" placeholder="તમારો experience પસંદ કરતા જ અહીં review તૈયાર થશે..." aria-label="Review draft"></textarea>
+        </div>
+        <p id="review-hint" class="hint">કોઈપણ option પર tap કરતાં review આપમેળે ફરીથી તૈયાર થશે.</p>
+
+        <button id="copy-btn" class="main-btn" type="button" onclick="copyAndRedirect()" disabled>📋 Copy કરો અને Google પર મૂકો</button>
+        <div class="social-grid">
+          <a class="instagram-btn" href="https://insta.openinapp.co/dztxm" target="_blank" rel="noopener noreferrer">📸 Instagram Follow</a>
+          <a class="call-btn" href="tel:+919825261490">📞 Store પર Call</a>
+        </div>
+        <p class="micro-note">Review submit કરતા પહેલાં text તમારી સાચી લાગણી પ્રમાણે edit કરી શકો છો.</p>
+      </div>
+    </section>
+    <div class="footer">FASHION FACTORY • MODASA</div>
+  </main>
+
 <script>
-let selectedKeywords=[];const REVIEW_API_URL="https://ff-review.vercel.app/api/generate-review";const GOOGLE_REVIEW_LINK="https://g.page/r/CZYN9mksn1LhEBM/review";const RECENT_KEY="ff_review_recent_v2";
-function toggleChip(el){el.classList.toggle('selected');const val=el.innerText.trim();if(selectedKeywords.includes(val))selectedKeywords=selectedKeywords.filter(k=>k!==val);else selectedKeywords.push(val)}
-function getRecentReviews(){try{const saved=JSON.parse(localStorage.getItem(RECENT_KEY)||"[]");return Array.isArray(saved)?saved.slice(0,10):[]}catch(_){return[]}}
-function saveRecentReview(review){try{const current=getRecentReviews().filter(item=>item!==review);current.unshift(review);localStorage.setItem(RECENT_KEY,JSON.stringify(current.slice(0,10)))}catch(_){} }
-async function generateReview(){if(!selectedKeywords.length){alert("કૃપા કરીને ઓછામાં ઓછું એક ઓપ્શન પસંદ કરો!");return}const reviewBox=document.getElementById("review-box"),aiBtn=document.getElementById("ai-btn"),copyBtn=document.getElementById("copy-btn"),hint=document.getElementById("review-hint");aiBtn.disabled=true;copyBtn.disabled=true;aiBtn.innerHTML='<span class="spinner"></span>રિવ્યુ બની રહ્યો છે...';reviewBox.value="તમારા માટે નવો અને natural AI રિવ્યુ તૈયાર થઈ રહ્યો છે...";hint.textContent="થોડું રાહ જુઓ... રિવ્યુ તૈયાર થયા પછી તમે પસંદ ન આવે તો ફરીથી AI રિવ્યુ બનાવી શકો છો.";try{const response=await fetch(REVIEW_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({keywords:selectedKeywords,recentReviews:getRecentReviews()})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||`Server error (${response.status})`);if(!data.review||typeof data.review!=="string")throw new Error("Gemini તરફથી valid review મળ્યો નથી.");reviewBox.value=data.review.trim();saveRecentReview(reviewBox.value);copyBtn.disabled=false;hint.innerHTML="રિવ્યુ ગમ્યો નથી? <b>✨ AI રિવ્યુ બનાવો</b> ફરી દબાવો — દર વખતે નવો અને અલગ review મળશે."}catch(err){reviewBox.value="";hint.innerHTML="રિવ્યુ જનરેટ કરવામાં સમસ્યા આવી. ફરીથી <b>✨ AI રિવ્યુ બનાવો</b> દબાવો.";alert("રિવ્યુ જનરેટ થઈ શક્યો નથી: "+err.message)}finally{aiBtn.disabled=false;aiBtn.innerHTML="✨ ફરીથી નવો AI રિવ્યુ બનાવો";copyBtn.disabled=!reviewBox.value.trim()}}
-async function copyAndRedirect(){const text=document.getElementById("review-box").value.trim();if(!text||text.includes("AI રિવ્યુ તૈયાર")||text.includes("natural AI રિવ્યુ તૈયાર")){alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");return}try{await navigator.clipboard.writeText(text);alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ખુલશે. ત્યાં Paste કરીને Post કરો.");window.location.href=GOOGLE_REVIEW_LINK}catch(err){alert("કોપી થઈ શક્યું નથી. કૃપા કરીને Review text manually copy કરો અને ફરી પ્રયાસ કરો.")}}
+const REVIEW_API_URL='https://ff-review.vercel.app/api/generate-review';
+const GOOGLE_REVIEW_LINK='https://g.page/r/CZYN9mksn1LhEBM/review';
+const RECENT_KEY='ff_review_recent_v3';
+const baseOptions=['સારી ક્વોલિટી','સરસ કલેક્શન','વ્યાજબી ભાવ','સારું વર્તન'];
+const extraOptions=['સારો ફિટિંગ','સારી વેરાયટી','સરળ શોપિંગ','હેલ્પફુલ સ્ટાફ','નવી ડિઝાઇન્સ','કપડાં comfortable લાગ્યા','પસંદગી માટે સારા options','shopping experience ગમ્યો'];
+let selectedKeywords=[];
+let rating=null;
+let controller=null;
+let debounceTimer=null;
+
+function renderOptions(){
+  const chips=document.getElementById('chips');
+  chips.innerHTML='';
+  baseOptions.forEach(addMainChip);
+  document.getElementById('drawer-chips').innerHTML='';
+  extraOptions.forEach(addDrawerChip);
+}
+function addMainChip(value){
+  const b=document.createElement('button');b.type='button';b.className='btn-chip';b.textContent=value;
+  b.onclick=()=>handleOption(value,b);document.getElementById('chips').appendChild(b);syncSelected();
+}
+function addDrawerChip(value){
+  const b=document.createElement('button');b.type='button';b.className='drawer-chip';b.textContent=value;
+  b.onclick=()=>{handleOption(value,b);};document.getElementById('drawer-chips').appendChild(b);syncSelected();
+}
+function handleOption(value,el){
+  if(selectedKeywords.includes(value)){
+    // Re-tap means: keep the option selected and generate a fresh variation.
+    queueGenerate();
+    pulse(el);
+    return;
+  }
+  selectedKeywords.push(value);
+  syncSelected();
+  queueGenerate();
+}
+function pulse(el){el.animate([{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:220});}
+function syncSelected(){
+  document.querySelectorAll('.btn-chip,.drawer-chip').forEach(el=>el.classList.toggle('selected',selectedKeywords.includes(el.textContent.trim())));
+}
+function clearAll(){
+  selectedKeywords=[];rating=null;document.querySelectorAll('.btn-chip,.drawer-chip').forEach(el=>el.classList.remove('selected'));document.querySelectorAll('.star').forEach(el=>el.classList.remove('active'));document.getElementById('review-box').value='';document.getElementById('copy-btn').disabled=true;document.getElementById('review-hint').textContent='કોઈપણ option પર tap કરતાં review આપમેળે ફરીથી તૈયાર થશે.';
+}
+function setRating(value){
+  rating=value;document.querySelectorAll('.star').forEach(star=>star.classList.toggle('active',Number(star.dataset.rating)<=value));
+  if(selectedKeywords.length) queueGenerate();
+  else document.getElementById('review-hint').textContent='હવે તમને જે ગમ્યું હોય તે option પસંદ કરો.';
+}
+document.querySelectorAll('.star').forEach(star=>star.addEventListener('click',()=>setRating(Number(star.dataset.rating))));
+function getRecentReviews(){try{const saved=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');return Array.isArray(saved)?saved.slice(0,12):[]}catch(_){return[]}}
+function saveRecentReview(review){try{const list=getRecentReviews().filter(x=>x!==review);list.unshift(review);localStorage.setItem(RECENT_KEY,JSON.stringify(list.slice(0,12)))}catch(_) {}}
+function queueGenerate(){clearTimeout(debounceTimer);debounceTimer=setTimeout(generateReview,280)}
+async function generateReview(){
+  if(!selectedKeywords.length)return;
+  if(controller)controller.abort();
+  controller=new AbortController();
+  const box=document.getElementById('review-box'),status=document.getElementById('review-status'),copy=document.getElementById('copy-btn'),hint=document.getElementById('review-hint');
+  status.classList.add('show');copy.disabled=true;hint.textContent='તમારા પસંદ કરેલા અનુભવ પરથી નવો draft તૈયાર થઈ રહ્યો છે...';
+  try{
+    const response=await fetch(REVIEW_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({keywords:selectedKeywords,rating,recentReviews:getRecentReviews()}),signal:controller.signal});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Review service unavailable');
+    if(!data.review||typeof data.review!=='string')throw new Error('Empty review');
+    box.value=data.review.trim();saveRecentReview(box.value);copy.disabled=false;hint.textContent='બીજો option પસંદ કરો અથવા પહેલેથી selected option પર ફરી tap કરો — નવો draft તરત તૈયાર થશે.';
+  }catch(err){if(err.name!=='AbortError'){box.value='';copy.disabled=true;hint.textContent='થોડીવાર પછી ફરી option પર tap કરો.';}}
+  finally{status.classList.remove('show');}
+}
+async function copyAndRedirect(){
+  const text=document.getElementById('review-box').value.trim();if(!text){return}
+  try{await navigator.clipboard.writeText(text);window.location.href=GOOGLE_REVIEW_LINK}catch(_){document.getElementById('review-box').focus();document.getElementById('review-box').select();alert('Review select થઈ ગયો છે. Copy કરીને Google Review પર paste કરો.')}
+}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-backdrop').classList.add('open');document.getElementById('drawer').setAttribute('aria-hidden','false')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-backdrop').classList.remove('open');document.getElementById('drawer').setAttribute('aria-hidden','true')}
+renderOptions();
 </script>
-</body></html>
+</body>
+</html>
