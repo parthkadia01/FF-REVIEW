@@ -3,41 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>અમારો અનુભવ કેવો રહ્યો?</title>
+  <meta name="theme-color" content="#08294a">
+  <title>Fashion Factory | તમારો અનુભવ કેવો રહ્યો?</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; margin: 0; }
-    .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 380px; margin: 20px auto; }
-    h2 { color: #333; font-size: 22px; margin-bottom: 5px; }
-    p { color: #666; font-size: 14px; margin-bottom: 15px; }
-    .chips-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
-    .btn-chip { background: #e4e6eb; border: none; padding: 10px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; color: #333; transition: 0.2s; }
-    .btn-chip.selected { background: #007bff; color: white; }
-    .ai-btn { background: #8e44ad; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%; font-size: 15px; }
-    .ai-btn:disabled { opacity: 0.65; cursor: wait; }
-    #review-box { width: 100%; height: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; resize: none; box-sizing: border-box; }
-    .main-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
-    .main-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+    :root {
+      --navy: #08294a;
+      --navy-2: #061d35;
+      --gold: #c48600;
+      --gold-light: #e0a52b;
+      --cream: #fffaf0;
+      --text: #17324d;
+      --muted: #6f7880;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, "Noto Sans Gujarati", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(196,134,0,.18), transparent 28%),
+        radial-gradient(circle at 90% 92%, rgba(196,134,0,.14), transparent 28%),
+        linear-gradient(145deg, var(--navy-2), var(--navy));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px 14px;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 180px;
+      height: 180px;
+      border: 1px solid rgba(224,165,43,.18);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::before { top: -95px; left: -80px; }
+    body::after { right: -90px; bottom: -90px; }
+
+    .page {
+      width: 100%;
+      max-width: 470px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-card {
+      background: rgba(255,255,255,.98);
+      border: 1px solid rgba(224,165,43,.55);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,.34);
+    }
+
+    .brand-header {
+      background: linear-gradient(135deg, #ffffff, #fbf5e8);
+      padding: 20px 22px 14px;
+      text-align: center;
+      border-bottom: 1px solid rgba(196,134,0,.25);
+    }
+
+    .logo {
+      display: block;
+      width: min(100%, 330px);
+      height: auto;
+      max-height: 145px;
+      object-fit: contain;
+      margin: 0 auto 8px;
+    }
+
+    .gold-line {
+      width: 72px;
+      height: 3px;
+      margin: 4px auto 8px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .tagline {
+      margin: 0;
+      color: #40566c;
+      font-size: 12px;
+      letter-spacing: .8px;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 22px 20px 24px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 24px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 7px 0 19px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+
+    .btn-chip {
+      border: 1px solid #d7dce1;
+      background: #f7f8f9;
+      color: var(--navy);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    }
+
+    .btn-chip:hover { transform: translateY(-1px); }
+
+    .btn-chip.selected {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: 0 5px 15px rgba(196,134,0,.25);
+    }
+
+    .ai-btn,
+    .main-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+
+    .ai-btn:hover:not(:disabled),
+    .main-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .ai-btn {
+      background: linear-gradient(135deg, #0c3b67, #08294a);
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      box-shadow: 0 8px 20px rgba(8,41,74,.22);
+      margin-bottom: 13px;
+    }
+
+    .main-btn {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: white;
+      padding: 14px;
+      font-size: 15px;
+      margin-top: 12px;
+      box-shadow: 0 8px 20px rgba(196,134,0,.24);
+    }
+
+    .ai-btn:disabled,
+    .main-btn:disabled {
+      opacity: .58;
+      cursor: wait;
+      transform: none;
+    }
+
+    .review-wrap {
+      position: relative;
+    }
+
+    #review-box {
+      width: 100%;
+      min-height: 112px;
+      padding: 14px;
+      border: 1px solid #d9d1bd;
+      border-radius: 13px;
+      background: var(--cream);
+      color: #263b4f;
+      font-size: 15px;
+      line-height: 1.65;
+      resize: vertical;
+      outline: none;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.04);
+    }
+
+    #review-box:focus {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 0 3px rgba(196,134,0,.12);
+    }
+
+    .hint {
+      margin: 9px 0 0;
+      color: #8a8f94;
+      font-size: 11px;
+    }
+
+    .footer {
+      text-align: center;
+      color: rgba(255,255,255,.72);
+      font-size: 11px;
+      margin-top: 14px;
+      letter-spacing: .4px;
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 12px; align-items: flex-start; }
+      .brand-card { margin-top: 8px; border-radius: 22px; }
+      .brand-header { padding: 16px 16px 11px; }
+      .logo { max-height: 120px; }
+      .content { padding: 19px 15px 20px; }
+      h1 { font-size: 21px; }
+      .btn-chip { padding: 9px 12px; }
+    }
   </style>
 </head>
 <body>
+  <main class="page">
+    <section class="brand-card">
+      <header class="brand-header">
+        <img class="logo" alt="FASHION FACTORY" src="data:image/png;base64,LOGO_BASE64_PLACEHOLDER">
+        <div class="gold-line"></div>
+        <p class="tagline">FASHION AS UNIQUE AS YOU ARE</p>
+      </header>
 
-<div class="card">
-  <h2>અમારો અનુભવ કેવો રહ્યો?</h2>
-  <p>તમને શું ગમ્યું તે પસંદ કરો:</p>
+      <div class="content">
+        <h1>અમારો અનુભવ કેવો રહ્યો?</h1>
+        <p class="subtitle">તમને શું ગમ્યું તે પસંદ કરો</p>
 
-  <div class="chips-container">
-    <button class="btn-chip" type="button" onclick="toggleChip(this)">સારી ક્વોલિટી</button>
-    <button class="btn-chip" type="button" onclick="toggleChip(this)">સરસ કલેક્શન</button>
-    <button class="btn-chip" type="button" onclick="toggleChip(this)">વ્યાજબી ભાવ</button>
-    <button class="btn-chip" type="button" onclick="toggleChip(this)">સારું વર્તન</button>
-  </div>
+        <div class="chips-container">
+          <button class="btn-chip" type="button" onclick="toggleChip(this)">સારી ક્વોલિટી</button>
+          <button class="btn-chip" type="button" onclick="toggleChip(this)">સરસ કલેક્શન</button>
+          <button class="btn-chip" type="button" onclick="toggleChip(this)">વ્યાજબી ભાવ</button>
+          <button class="btn-chip" type="button" onclick="toggleChip(this)">સારું વર્તન</button>
+        </div>
 
-  <button id="ai-btn" class="ai-btn" type="button" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button>
+        <button id="ai-btn" class="ai-btn" type="button" onclick="generateReview()">✨ AI રિવ્યુ બનાવો</button>
 
-  <textarea id="review-box" placeholder="અહીં AI રિવ્યુ તૈયાર થશે..." aria-label="AI review"></textarea>
+        <div class="review-wrap">
+          <textarea id="review-box" placeholder="તમારા અનુભવ પરથી અહીં રિવ્યુ તૈયાર થશે..." aria-label="AI review"></textarea>
+        </div>
+        <p class="hint">તમારા પસંદ કરેલા અનુભવને આધારે natural review તૈયાર થશે.</p>
 
-  <button id="copy-btn" class="main-btn" type="button" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
-</div>
+        <button id="copy-btn" class="main-btn" type="button" onclick="copyAndRedirect()">📋 કોપી કરો અને Google પર મૂકો</button>
+      </div>
+    </section>
+
+    <div class="footer">FASHION FACTORY • MODASA</div>
+  </main>
 
 <script>
   let selectedKeywords = [];
@@ -48,7 +275,6 @@
   function toggleChip(el) {
     el.classList.toggle('selected');
     const val = el.innerText.trim();
-
     if (selectedKeywords.includes(val)) {
       selectedKeywords = selectedKeywords.filter(k => k !== val);
     } else {
@@ -60,9 +286,7 @@
     try {
       const saved = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
       return Array.isArray(saved) ? saved.slice(0, 10) : [];
-    } catch (_) {
-      return [];
-    }
+    } catch (_) { return []; }
   }
 
   function saveRecentReview(review) {
@@ -91,21 +315,11 @@
       const response = await fetch(REVIEW_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          keywords: selectedKeywords,
-          recentReviews: getRecentReviews()
-        })
+        body: JSON.stringify({ keywords: selectedKeywords, recentReviews: getRecentReviews() })
       });
-
       const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || `Server error (${response.status})`);
-      }
-
-      if (!data.review || typeof data.review !== "string") {
-        throw new Error("Gemini તરફથી valid review મળ્યો નથી.");
-      }
+      if (!response.ok) throw new Error(data.error || `Server error (${response.status})`);
+      if (!data.review || typeof data.review !== "string") throw new Error("Gemini તરફથી valid review મળ્યો નથી.");
 
       reviewBox.value = data.review.trim();
       saveRecentReview(reviewBox.value);
@@ -121,12 +335,10 @@
 
   async function copyAndRedirect() {
     const text = document.getElementById("review-box").value.trim();
-
     if (!text || text.includes("AI રિવ્યુ તૈયાર કરી રહ્યું છે")) {
       alert("પહેલાં AI રિવ્યુ જનરેટ કરો!");
       return;
     }
-
     try {
       await navigator.clipboard.writeText(text);
       alert("રિવ્યુ કોપી થઈ ગયો છે! હવે Google ખુલશે. ત્યાં Paste કરીને Post કરો.");
@@ -136,6 +348,5 @@
     }
   }
 </script>
-
 </body>
 </html>
